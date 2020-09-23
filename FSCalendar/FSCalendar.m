@@ -149,8 +149,11 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
     _appearance = [[FSCalendarAppearance alloc] init];
     _appearance.calendar = self;
     
-    //_gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    _gregorian = [NSCalendar currentCalendar];
+    _gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    if(_gregorian == nil) {
+        _gregorian = [NSCalendar currentCalendar];
+    }
+    
     _formatter = [[NSDateFormatter alloc] init];
     _formatter.dateFormat = @"yyyy-MM-dd";
     _locale = [NSLocale currentLocale];
@@ -159,8 +162,10 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
     [self invalidateDateTools];
     
     _today = [self.gregorian dateBySettingHour:0 minute:0 second:0 ofDate:[NSDate date] options:0];
+    if(_today == nil) { _today = [NSDate date];}
     _currentPage = [self.gregorian fs_firstDayOfMonth:_today];
-    
+    if(_currentPage == nil) { _currentPage = _today; }
+
     
     _minimumDate = [self.formatter dateFromString:@"1970-01-01"];
     _maximumDate = [self.formatter dateFromString:@"2099-12-31"];
